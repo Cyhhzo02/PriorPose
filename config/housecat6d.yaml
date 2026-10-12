@@ -1,0 +1,53 @@
+experiment: priorpose_housecat6d
+seed: 1
+pointnet_fps_skip_near_origin: false
+epochs: 150
+log_every: 50
+
+data:
+  dataset: housecat6d
+  root: data/housecat6d
+  mean_shape_path: data/mean_shapes/housecat6d_512.npy
+  image_size: 224
+  sample_num: 1024
+  outlier_threshold: 0.1
+  sequence_count: -1
+  images_per_sequence: -1
+  batch_size: 32
+  workers: 24
+
+model:
+  category_count: 10
+  prior_point_count: 512
+  dino_repository: third_party/dinov2
+  point_position_frame: centered_augmented
+  transformer:
+    blocks: 6
+    share_parameters: false
+    heads: 4
+    hidden_dim: 1024
+    observation_seeds: 96
+    prior_seeds: 64
+    neighbors: 32
+    score_bias_gamma: 0.2
+
+schedule:
+  learning_rate: 0.0005
+  weight_decay: 0.0
+  total_steps: 100000
+  warmup_steps: 4000
+  warmup_factor: 0.001
+
+loss:
+  pose: 2.0
+  rotation_extra: 0.0
+  nocs: 2.0
+  canonical: 2.0
+  reconstruction: 10.0
+  diversity: 10.0
+  camera_pose: 0.5
+  camera_shape: 0.5
+  camera_symmetry_adjusted_rotation: true
+  nocs_symmetry_adjusted_rotation: true
+  diversity_threshold: 0.01
+  symmetry_ids: [1, 2, 7]

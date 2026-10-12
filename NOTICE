@@ -1,0 +1,12 @@
+PriorPose
+
+This codebase is derived in part from AG-Pose and retains its MIT license and
+copyright notice. The NOCS/HouseCat6D evaluation code is adapted from AG-Pose,
+NOCS, DualPoseNet and CATRE as identified in the corresponding source headers.
+The bundled PointNet++ CUDA extension retains its upstream source headers.
+
+DINOv2 source is obtained from its official repository by the setup script.
+The supplied model checkpoint includes the frozen DINOv2-S/14 backbone
+parameters from Meta AI. DINOv2 code and model weights are provided under the
+Apache License 2.0; see third_party/DINOv2-LICENSE and
+https://github.com/facebookresearch/dinov2.

@@ -1,0 +1,57 @@
+experiment: priorpose_nocs
+seed: 1
+epochs: 30
+log_every: 50
+deterministic: true
+pointnet_backend: ordered_cuda
+pointnet_reduction_seed: 2
+
+data:
+  dataset: nocs
+  root: data/nocs
+  mean_shape_path: data/mean_shapes/nocs_512.npy
+  image_size: 224
+  sample_num: 1024
+  outlier_threshold: 0.1
+  steps_per_epoch: 4000
+  synthetic_batch_size: 30
+  real_batch_size: 10
+  synthetic_workers: 12
+  real_workers: 4
+
+model:
+  category_count: 6
+  prior_point_count: 512
+  dino_repository: third_party/dinov2
+  point_position_frame: camera_raw
+  input_normalization: true
+  transformer:
+    blocks: 6
+    share_parameters: false
+    heads: 4
+    hidden_dim: 1024
+    observation_seeds: 96
+    prior_seeds: 64
+    neighbors: 32
+    score_bias_gamma: 0.2
+
+schedule:
+  learning_rate: 0.0006
+  weight_decay: 0.0
+  total_steps: 120000
+  warmup_steps: 4000
+  warmup_factor: 0.001
+
+loss:
+  pose: 2.0
+  rotation_extra: 0.75
+  nocs: 2.0
+  canonical: 0.5
+  reconstruction: 10.0
+  diversity: 0.0
+  camera_pose: 0.5
+  camera_shape: 0.5
+  camera_symmetry_adjusted_rotation: true
+  nocs_symmetry_adjusted_rotation: true
+  diversity_threshold: 0.01
+  symmetry_ids: [0, 1, 3]
