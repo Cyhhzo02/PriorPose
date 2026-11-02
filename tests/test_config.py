@@ -11,9 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 class RecipeTests(unittest.TestCase):
     def test_nocs_recipe(self):
         cfg = yaml.safe_load((ROOT / 'config/nocs.yaml').read_text())
-        self.assertEqual((cfg['seed'], cfg['pointnet_reduction_seed']), (1, 2))
-        self.assertTrue(cfg['deterministic'])
-        self.assertEqual(cfg['pointnet_backend'], 'ordered_cuda')
+        self.assertEqual(cfg['seed'], 2)
+        self.assertFalse(cfg['deterministic'])
+        self.assertEqual(cfg['pointnet_backend'], 'native')
         self.assertEqual(cfg['epochs'] * cfg['data']['steps_per_epoch'], 120000)
         self.assertEqual(cfg['schedule']['total_steps'], 120000)
         self.assertEqual(cfg['schedule']['learning_rate'], 0.0006)
@@ -24,9 +24,11 @@ class RecipeTests(unittest.TestCase):
         for cfg in configs:
             self.assertEqual(cfg['model']['transformer']['blocks'], 6)
             self.assertFalse(cfg['model']['transformer']['share_parameters'])
-            self.assertTrue(cfg['loss']['nocs_symmetry_adjusted_rotation'])
-            self.assertTrue(cfg['loss']['camera_symmetry_adjusted_rotation'])
+        self.assertFalse(configs[0]['loss']['nocs_symmetry_adjusted_rotation'])
+        self.assertFalse(configs[0]['loss']['camera_symmetry_adjusted_rotation'])
         housecat = configs[1]
+        self.assertTrue(housecat['loss']['nocs_symmetry_adjusted_rotation'])
+        self.assertTrue(housecat['loss']['camera_symmetry_adjusted_rotation'])
         self.assertFalse(housecat.get('deterministic', False))
         self.assertEqual(housecat.get('pointnet_backend', 'native'), 'native')
         self.assertFalse(housecat['pointnet_fps_skip_near_origin'])

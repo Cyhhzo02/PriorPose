@@ -1,10 +1,9 @@
 experiment: priorpose_nocs
-seed: 1
+seed: 2
 epochs: 30
 log_every: 50
-deterministic: true
-pointnet_backend: ordered_cuda
-pointnet_reduction_seed: 2
+deterministic: false
+pointnet_backend: native
 
 data:
   dataset: nocs
@@ -51,7 +50,7 @@ loss:
   diversity: 0.0
   camera_pose: 0.5
   camera_shape: 0.5
-  camera_symmetry_adjusted_rotation: true
-  nocs_symmetry_adjusted_rotation: true
+  camera_symmetry_adjusted_rotation: false
+  nocs_symmetry_adjusted_rotation: false
   diversity_threshold: 0.01
   symmetry_ids: [0, 1, 3]

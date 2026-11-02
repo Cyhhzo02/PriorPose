@@ -13,8 +13,9 @@ The two-stream Transformer includes a camera token, category-prior features
 and coordinate embeddings. Binned soft-expectation heads predict NOCS
 coordinates and prior deformation; a learned head estimates pose and size.
 
-Both configs use symmetry-adjusted rotations in the NOCS and camera-consistency
-terms. The category lists and term weights are recorded in each config. NOCS
+Symmetry-adjusted rotations in the NOCS and camera-consistency terms are
+configured per dataset: disabled for NOCS and enabled for HouseCat6D. The
+category lists and term weights are recorded in each config. NOCS
 uses raw-camera coordinates for its early embedding; HouseCat6D uses centered,
 training-augmented coordinates. Later geometric routing is centered/augmented
 in both cases.
@@ -25,17 +26,9 @@ weights are specified in the YAML configs.
 
 ## Runtime settings
 
-`config/nocs.yaml` uses `deterministic: true`,
-`pointnet_backend: ordered_cuda`, and `pointnet_reduction_seed: 2`.
-The latter controls a private, cached permutation of PointNet++ gradient
-contributions; it does not consume the training RNG stream. Gathering,
-grouping and interpolation accumulate FP32 gradients in a fixed order on the
-GPU. Forward operators and the model architecture are unchanged.
-
-The NOCS runtime also selects strict PyTorch operations, disables TF32 and
-cuDNN benchmarking, sets `CUBLAS_WORKSPACE_CONFIG=:4096:8`, and uses separate
-seeded CAMERA/REAL loader generators. Keep the software stack, GPU type,
-batch sizes, worker counts and both seeds fixed when comparing training runs.
+Both dataset configurations use native PointNet++ backward, matching their
+pretrained models. The fixed-order CUDA backend remains available through
+`pointnet_backend: ordered_cuda` for custom configurations.
 
 Tested environment for the release implementation and NOCS evaluation:
 
@@ -57,9 +50,8 @@ Install a matching CUDA-enabled PyTorch/torchvision pair before building the
 extensions. Set `TORCH_CUDA_ARCH_LIST` explicitly when building for a different
 deployment GPU; otherwise PyTorch targets the visible GPUs.
 
-HouseCat6D retains its native PointNet++ backward, loader policy and training
-settings. The NOCS numerical settings are opt-in through its config, not global
-changes to the HouseCat6D recipe. Use separate training processes per run.
+Runtime options are selected per configuration. Use separate training processes
+per run.
 
 FPS candidate handling is also dataset-specific. HouseCat6D sets
 `pointnet_fps_skip_near_origin: false`, retaining all points in centered clouds.
@@ -80,8 +72,6 @@ also include the optimizer, epoch and update count. `--resume` restores those
 fields and starts the following epoch. Use fresh training for the documented
 NOCS schedule.
 
-The checkpoint asset manifest records its training configuration, evaluation
-configuration, epoch and file hashes. The supplied NOCS model uses native
-PointNet++ backward during training; `config/nocs.yaml` selects fixed-order
-CUDA for new training and strict arithmetic for evaluation. Network and loss
-settings are shared. Evaluation uses the standard dataset evaluator.
+Use `config/nocs.yaml` or `config/housecat6d.yaml` with the matching pretrained
+model. Evaluation uses the standard dataset evaluator. NOCS category mean shapes
+are unchanged from v1.0.0 and can be reused when updating model weights.

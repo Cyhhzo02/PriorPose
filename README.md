@@ -140,8 +140,16 @@ data/mean_shapes/
 └── housecat6d_512.npy    # float32, shape [10, 512, 3]
 ```
 
-The [pretrained-model archives](#pretrained-models) include these mean shapes.
-Alternatively, prepare them from the original mean shapes:
+The mean shapes are unchanged from v1.0.0. Existing users can reuse them.
+For a new installation, download the [NOCS data archive](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.0.0/PriorPose-nocs-assets.tar.gz)
+and extract its mean shapes:
+
+```bash
+tar -xzf PriorPose-nocs-assets.tar.gz data/mean_shapes/nocs_512.npy
+```
+
+The HouseCat6D model archive includes its mean shapes. Alternatively, prepare
+mean shapes from the original files:
 
 ```bash
 python scripts/prepare_mean_shapes.py \
@@ -164,7 +172,7 @@ Dataset, mean-shape and DINOv2 paths can be overridden from the command line:
 ### NOCS
 
 ```bash
-PYTHONHASHSEED=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python train.py \
+python train.py \
   --config config/nocs.yaml \
   --gpu 0 \
   --output-dir runs/priorpose_nocs
@@ -223,27 +231,16 @@ Download the pretrained models below:
 
 | Dataset | Checkpoint | Config | Download |
 | --- | --- | --- | --- |
-| NOCS REAL275 | `priorpose_nocs_epoch30.pth` | [nocs.yaml](config/nocs.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.0.0/PriorPose-nocs-assets.tar.gz) |
-| NOCS REAL275 (alternative) | `priorpose_nocs_seed2_epoch30.pth` | [nocs_seed2.yaml](config/nocs_seed2.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.1.0/priorpose_nocs_seed2_epoch30.pth) |
+| NOCS REAL275 | `priorpose_nocs_epoch30.pth` | [nocs.yaml](config/nocs.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.1.0/priorpose_nocs_epoch30.pth) |
 | HouseCat6D | `priorpose_housecat6d_epoch150.pth` | [housecat6d.yaml](config/housecat6d.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.0.0/PriorPose-housecat6d-assets.tar.gz) |
 
-Each dataset archive includes the pretrained checkpoint and category mean
-shapes. Extract it into the repository root, then evaluate:
+For NOCS, place the downloaded `.pth` in `checkpoints/` and use the mean shapes
+from [data preparation](#category-mean-shapes):
 
 ```bash
-tar -xzf PriorPose-nocs-assets.tar.gz
 python test.py --config config/nocs.yaml --gpu 0 \
   --checkpoint checkpoints/priorpose_nocs_epoch30.pth \
   --output-dir results/nocs_release
-```
-
-For the alternative NOCS model, place the downloaded `.pth` in `checkpoints/`
-and reuse the NOCS mean shapes above:
-
-```bash
-python test.py --config config/nocs_seed2.yaml --gpu 0 \
-  --checkpoint checkpoints/priorpose_nocs_seed2_epoch30.pth \
-  --output-dir results/nocs_seed2_release
 ```
 
 For HouseCat6D:
@@ -257,10 +254,6 @@ python test.py --config config/housecat6d.yaml --gpu 0 \
 
 Pretrained checkpoints contain model weights only; training checkpoints written by
 `train.py` additionally contain optimizer state for resuming.
-
-The default NOCS training command uses the
-fixed-order CUDA backend; its pretrained checkpoint was trained with native
-PointNet++ backward. Both use the same network and loss settings.
 
 ## Tests
 
