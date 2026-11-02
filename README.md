@@ -224,7 +224,7 @@ Download the pretrained models below:
 | Dataset | Checkpoint | Config | Download |
 | --- | --- | --- | --- |
 | NOCS REAL275 | `priorpose_nocs_epoch30.pth` | [nocs.yaml](config/nocs.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.0.0/PriorPose-nocs-assets.tar.gz) |
-| NOCS REAL275 (alternative) | `priorpose_nocs_seed2_epoch30.pth` | [nocs_seed2.yaml](config/nocs_seed2.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.1.0/PriorPose-nocs-seed2-assets.tar.gz) |
+| NOCS REAL275 (alternative) | `priorpose_nocs_seed2_epoch30.pth` | [nocs_seed2.yaml](config/nocs_seed2.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.1.0/priorpose_nocs_seed2_epoch30.pth) |
 | HouseCat6D | `priorpose_housecat6d_epoch150.pth` | [housecat6d.yaml](config/housecat6d.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.0.0/PriorPose-housecat6d-assets.tar.gz) |
 
 Each dataset archive includes the pretrained checkpoint and category mean
@@ -237,10 +237,10 @@ python test.py --config config/nocs.yaml --gpu 0 \
   --output-dir results/nocs_release
 ```
 
-For the alternative NOCS model, use its matching configuration:
+For the alternative NOCS model, place the downloaded `.pth` in `checkpoints/`
+and reuse the NOCS mean shapes above:
 
 ```bash
-tar -xzf PriorPose-nocs-seed2-assets.tar.gz
 python test.py --config config/nocs_seed2.yaml --gpu 0 \
   --checkpoint checkpoints/priorpose_nocs_seed2_epoch30.pth \
   --output-dir results/nocs_seed2_release
