@@ -224,6 +224,7 @@ Download the pretrained models below:
 | Dataset | Checkpoint | Config | Download |
 | --- | --- | --- | --- |
 | NOCS REAL275 | `priorpose_nocs_epoch30.pth` | [nocs.yaml](config/nocs.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.0.0/PriorPose-nocs-assets.tar.gz) |
+| NOCS REAL275 (alternative) | `priorpose_nocs_seed2_epoch30.pth` | [nocs_seed2.yaml](config/nocs_seed2.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.1.0/PriorPose-nocs-seed2-assets.tar.gz) |
 | HouseCat6D | `priorpose_housecat6d_epoch150.pth` | [housecat6d.yaml](config/housecat6d.yaml) | [Download](https://github.com/Cyhhzo02/PriorPose/releases/download/v1.0.0/PriorPose-housecat6d-assets.tar.gz) |
 
 Each dataset archive includes the pretrained checkpoint and category mean
@@ -236,6 +237,15 @@ python test.py --config config/nocs.yaml --gpu 0 \
   --output-dir results/nocs_release
 ```
 
+For the alternative NOCS model, use its matching configuration:
+
+```bash
+tar -xzf PriorPose-nocs-seed2-assets.tar.gz
+python test.py --config config/nocs_seed2.yaml --gpu 0 \
+  --checkpoint checkpoints/priorpose_nocs_seed2_epoch30.pth \
+  --output-dir results/nocs_seed2_release
+```
+
 For HouseCat6D:
 
 ```bash
@@ -245,11 +255,11 @@ python test.py --config config/housecat6d.yaml --gpu 0 \
   --output-dir results/housecat6d_release
 ```
 
-Both checkpoints contain model weights only; training checkpoints written by
+Pretrained checkpoints contain model weights only; training checkpoints written by
 `train.py` additionally contain optimizer state for resuming.
 
-The documented NOCS training command uses the
-fixed-order CUDA backend; the pretrained checkpoint was trained with native
+The default NOCS training command uses the
+fixed-order CUDA backend; its pretrained checkpoint was trained with native
 PointNet++ backward. Both use the same network and loss settings.
 
 ## Tests
